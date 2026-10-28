@@ -1,0 +1,16 @@
+services:
+  dark-bot:
+    build: .
+    container_name: dark-wa-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${PORT:-3000}:3000"
+    volumes:
+      - ./sessions:/app/sessions
+      - ./backups:/app/backups
+      - ./dark_bot.db:/app/dark_bot.db
+    environment:
+      NODE_ENV: production
+      PORT: 3000

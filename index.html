@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>DARK WA BOT PRO - Dashboard</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>DARK WA BOT PRO</h1>
+      <div class="status-badge">● حالة الخادم</div>
+    </header>
+
+    <section class="stats-grid">
+      <div class="card">
+        <h3>المستخدمون</h3>
+        <p id="user-count">0</p>
+      </div>
+      <div class="card">
+        <h3>الأوامر</h3>
+        <p id="cmd-count">0</p>
+      </div>
+    </section>
+
+    <section class="panel card">
+      <h2>لوحة التحكم</h2>
+      <p class="notice">هذه واجهة عرض أولية. إدارة الأوامر من المتصفح غير مفعّلة قبل إضافة تسجيل دخول وحماية صلاحيات.</p>
+      <button id="refresh" type="button">تحديث الإحصائيات</button>
+      <p id="status" role="status"></p>
+    </section>
+  </main>
+  <script>
+    async function refreshStats() {
+      const status = document.getElementById('status');
+      try {
+        const response = await fetch('/api/stats', { cache: 'no-store' });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const data = await response.json();
+        document.getElementById('user-count').textContent = data.totalUsers;
+        document.getElementById('cmd-count').textContent = data.totalCommands;
+        document.querySelector('.status-badge').textContent = '● ' + (data.status === 'online' ? 'الخادم يعمل' : 'غير متصل');
+        status.textContent = 'تم تحديث البيانات.';
+      } catch {
+        status.textContent = 'تعذر تحميل الإحصائيات.';
+      }
+    }
+    document.getElementById('refresh').addEventListener('click', refreshStats);
+    refreshStats();
+  </script>
+</body>
+</html>
